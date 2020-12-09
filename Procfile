@@ -1,1 +1,1 @@
-worker: java target/classes/main/java/OWLPromos.class
+worker: java target/classes Main.class
