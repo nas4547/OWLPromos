@@ -1,1 +1,1 @@
-worker: java target/classes/Main.class
+worker: java Main.class
