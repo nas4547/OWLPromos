@@ -1,0 +1,1 @@
+worker: java target/classes/main/java/OWLPromos.class
