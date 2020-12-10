@@ -15,7 +15,7 @@ public class Main {
      * @throws TwitterException
      */
     public static void main(String[] args) throws TwitterException {
-        System.out.println("[INFO]: STARTING");
+        System.out.println("[INFO] : STARTING");
         me = TwitterFactory.getSingleton();
         TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
 
