@@ -37,8 +37,8 @@ public class Main {
         System.out.println("[" + java.util.Calendar.getInstance().getTime() + "]With handles " + Arrays.toString(handles));
 
         /* The keywords to filter through */
-        final String[] keyWords = {"giveaway", "copy", "free copy", "Overwatch Origins Edition", "for PC", "receive a",
-                "Origins Edition", "tokens", "skins", "skin code", "spray code"};
+        final String[] keyWords = {"giveaway", "free copy", "Overwatch Origins Edition", "for PC",
+                "Origins Edition", "tokens", "skin code", "spray code"};
 
         System.out.println("[" + java.util.Calendar.getInstance().getTime() + "]With keywords " + Arrays.toString(keyWords));
 
