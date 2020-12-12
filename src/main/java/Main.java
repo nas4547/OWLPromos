@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 /**
  * A bot that automatically detects giveaways run by teams and tweets them out.
+ *
  * @author Nate S.
  */
 public class Main {
@@ -17,6 +18,7 @@ public class Main {
 
     /**
      * The main method. Initializes Twitter, TwitterStream, and the StatusListener.
+     *
      * @param args the command line arguments
      * @throws TwitterException
      */
@@ -31,6 +33,7 @@ public class Main {
                 "NYXL", "Fusion", "Spitfire", "DallasFuel", "LAValiant",
                 "ShanghaiDragons", "BostonUprising", "SFShock", "washjustice", "VancouverTitans"
         };
+
         System.out.println("[" + java.util.Calendar.getInstance().getTime() + "]With handles " + Arrays.toString(handles));
 
         /* The keywords to filter through */
@@ -85,28 +88,29 @@ public class Main {
 
     /**
      * Finds the type of promotion being hosted.
+     *
      * @param contents The contents of the tweet, used to find the type of promotion
      * @return The type of promotion
      */
     public static String findType(Status contents) {
         String statusText = contents.getText().toLowerCase();
-        if(statusText.contains("copy"))
+        if (statusText.contains("copy"))
             type = "Free Copy";
-        else if(statusText.contains("overwatch origins edition"))
+        else if (statusText.contains("overwatch origins edition"))
             type = "Free Copy";
-        else if(statusText.contains("tokens") || statusText.contains("token"))
+        else if (statusText.contains("tokens") || statusText.contains("token"))
             type = "Token";
-        else if(statusText.contains("skin code"))
+        else if (statusText.contains("skin code"))
             type = "Skin Code";
-        else if(statusText.contains("skins"))
+        else if (statusText.contains("skins"))
             type = "Skin Code";
-        else if(statusText.contains("contenders") || statusText.contains("contender"))
+        else if (statusText.contains("contenders") || statusText.contains("contender"))
             type = "Contenders";
-        else if(statusText.contains("spray code"))
+        else if (statusText.contains("spray code"))
             type = "Spray Code";
         else
             type = "Unknown";
-        if(statusText.contains("giveaway") || statusText.contains("will win"))
+        if (statusText.contains("giveaway") || statusText.contains("will win"))
             type += " Giveaway";
         return type;
     }
