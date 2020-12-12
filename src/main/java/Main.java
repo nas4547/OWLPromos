@@ -110,7 +110,7 @@ public class Main {
             type = "Spray Code";
         else
             type = "Unknown";
-        if (statusText.contains("giveaway") || statusText.contains("will win"))
+        if (statusText.contains("giveaway") || statusText.contains("will win") || statusText.contains("give away"))
             type += " Giveaway";
         return type;
     }
