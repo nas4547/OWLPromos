@@ -129,8 +129,8 @@ public class Main {
             url = "N/A";
         me.updateStatus(
                 "The " + contents.getUser().getName() + " are running a promotion." +
-                        "\nLink: " + url +
                         "\nType: " + type +
+                        "\nLink: " + url +
                         "\nTweet: " + "https://twitter.com/" + contents.getUser().getScreenName() + "/status/" + contents.getId());
     }
 }
