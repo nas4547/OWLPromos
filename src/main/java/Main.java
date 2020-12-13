@@ -14,6 +14,7 @@ public class Main {
     private static Twitter me; /* The twitter defined in twitter4j.properties */
     private static boolean detected = false; /* A boolean to prevent duplicate occurrences of keywords in statusTexts */
     private static boolean verified = false; /* A boolean to verify that the flagged tweet is posted by a username in String[] handles */
+    private static boolean published = false; /* A boolean that tracks whether a tweet was already published. */
     private static String type = "Unknown"; /* The default 'Type' of tweet */
 
     /**
@@ -70,14 +71,25 @@ public class Main {
                             type = findType(status);
                             try {
                                 publishTweet(status);
+                                published = true;
                             } catch (TwitterException e) {
                                 e.printStackTrace();
                             }
                         }
                     }
                 }
+                if (status.getURLEntities().length != 0 && !published) {
+                    if(status.getURLEntities()[0].getExpandedURL().contains("spraycode")
+                            || status.getURLEntities()[0].getExpandedURL().contains("owgamecodes")) {
+                        try {
+                            publishTweet(status);
+                            published = true;
+                        } catch (TwitterException e) { e.printStackTrace(); }
+                    }
+                }
                 detected = false;
                 verified = false;
+                published = false;
             }
         };
         twitterStream.addListener(statusListener);
@@ -123,8 +135,9 @@ public class Main {
      */
     public static void publishTweet(Status contents) throws TwitterException {
         String url;
-        if (contents.getURLEntities().length != 0)
+        if (contents.getURLEntities().length != 0) {
             url = contents.getURLEntities()[0].getURL();
+        }
         else
             url = "N/A";
         me.updateStatus(
