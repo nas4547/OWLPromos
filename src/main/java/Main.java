@@ -16,6 +16,7 @@ public class Main {
     private static boolean verified = false; /* A boolean to verify that the flagged tweet is posted by a username in String[] handles */
     private static boolean published = false; /* A boolean that tracks whether a tweet was already published. */
     private static String type = "Unknown"; /* The default 'Type' of tweet */
+    private static NLogger logger = new NLogger(false);
 
     /**
      * The main method. Initializes Twitter, TwitterStream, and the StatusListener.
@@ -24,7 +25,7 @@ public class Main {
      * @throws TwitterException
      */
     public static void main(String[] args) throws TwitterException {
-        System.out.println("[" + java.util.Calendar.getInstance().getTime() + "]Running main");
+        logger.info("Running main class");
         me = TwitterFactory.getSingleton();
         TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
 
@@ -35,13 +36,13 @@ public class Main {
                 "ShanghaiDragons", "BostonUprising", "SFShock", "washjustice", "VancouverTitans"
         };
 
-        System.out.println("[" + java.util.Calendar.getInstance().getTime() + "]With handles " + Arrays.toString(handles));
+        logger.info("Handles: " + Arrays.toString(handles));
 
         /* The keywords to filter through */
         final String[] keyWords = {"giveaway", "free copy", "Overwatch Origins Edition", "for PC",
                 "Origins Edition", "tokens", "skin code", "spray code"};
 
-        System.out.println("[" + java.util.Calendar.getInstance().getTime() + "]With keywords " + Arrays.toString(keyWords));
+        logger.info("Keywords: " + Arrays.toString(keyWords));
 
         /* An array to store the handles to filter through, as long userId's */
         final long[] teams = new long[handles.length];
@@ -49,7 +50,7 @@ public class Main {
             User account = me.showUser(handles[i]);
             teams[i] = account.getId();
         }
-
+        logger.info("IDs: " + Arrays.toString(teams));
         /**
          * A listener to detect status updates (new tweets)
          * @param status Information of the tweet (author, text, etc.)
@@ -60,36 +61,45 @@ public class Main {
                 String statusText = status.getText();
                 for (String keyword : keyWords) {
                     if (statusText.toLowerCase().contains(keyword) && !detected) { /* Prevents duplicates and case sensitivity */
+                        logger.info("A tweet from " + status.getUser().getScreenName() + " was flagged.");
                         for (long id : teams) {                                    /* Prevents replies from being flagged */
                             if (id == status.getUser().getId())
                                 verified = true;
+                            logger.info("Verified? " + verified);
                         }
                         if (verified) {
-                            System.out.println("User: \n\t@" + status.getUser().getScreenName());
-                            System.out.println("Tweet: \n\t" + status.getText() + "\n=========================");
                             detected = true;
+                            logger.info("Detected flag updated to: " + detected + " from " + !detected);
                             type = findType(status);
+                            logger.info("Type found: " + type);
+                            logger.info("Attempting to publish tweet");
                             try {
-                                publishTweet(status);
                                 published = true;
+                                publishTweet(status);
                             } catch (TwitterException e) {
-                                e.printStackTrace();
+                                logger.warn("Exception occurred when attempting to publish tweet: ", e);
                             }
                         }
                     }
                 }
                 if (status.getURLEntities().length != 0 && !published) {
-                    if(status.getURLEntities()[0].getExpandedURL().contains("spraycode")
+                    if (status.getURLEntities()[0].getExpandedURL().contains("spraycode")
                             || status.getURLEntities()[0].getExpandedURL().contains("owgamecodes")) {
+                        logger.info("Attempting to publish tweet with URL");
                         try {
                             publishTweet(status);
                             published = true;
-                        } catch (TwitterException e) { e.printStackTrace(); }
+                        } catch (TwitterException e) {
+                            logger.warn("Exception found when publishing with URL: ", e);
+                        }
                     }
                 }
                 detected = false;
                 verified = false;
                 published = false;
+                logger.info("Detected flag updated to: " + detected);
+                logger.info("Detected flag updated to: " + verified);
+                logger.info("Detected flag updated to: " + published);
             }
         };
         twitterStream.addListener(statusListener);
@@ -137,8 +147,7 @@ public class Main {
         String url;
         if (contents.getURLEntities().length != 0) {
             url = contents.getURLEntities()[0].getURL();
-        }
-        else
+        } else
             url = "N/A";
         me.updateStatus(
                 "The " + contents.getUser().getName() + " are running a promotion." +
