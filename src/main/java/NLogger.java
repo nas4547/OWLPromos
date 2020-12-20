@@ -13,7 +13,7 @@ public class NLogger {
      */
     public NLogger(boolean timeLogging) {
         this.withTime = timeLogging;
-        info("Running NLogger with timeLogging = " + timeLogging);
+        info("Creating NLogger with timeLogging = " + timeLogging);
     }
 
     /**

@@ -58,10 +58,10 @@ public class Main {
         StatusListener statusListener = new StatusAdapter() {
             @Override
             public void onStatus(Status status) {
+                logger.info("A tweet from " + status.getUser().getScreenName() + " was flagged.");
                 String statusText = status.getText();
                 for (String keyword : keyWords) {
                     if (statusText.toLowerCase().contains(keyword) && !detected) { /* Prevents duplicates and case sensitivity */
-                        logger.info("A tweet from " + status.getUser().getScreenName() + " was flagged.");
                         for (long id : teams) {                                    /* Prevents replies from being flagged */
                             if (id == status.getUser().getId())
                                 verified = true;
@@ -69,7 +69,7 @@ public class Main {
                         }
                         if (verified) {
                             detected = true;
-                            logger.info("Detected flag updated to: " + detected + " from " + !detected);
+                            logger.info("Detected flag updated to: " + detected);
                             type = findType(status);
                             logger.info("Type found: " + type);
                             logger.info("Attempting to publish tweet");
