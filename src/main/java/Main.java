@@ -1,9 +1,6 @@
 import twitter4j.*;
 
 import java.util.Arrays;
-import java.util.Date;
-import java.util.logging.*;
-import java.util.logging.Logger;
 
 /**
  * A bot that automatically detects giveaways run by teams and tweets them out.
@@ -16,7 +13,7 @@ public class Main {
     private static boolean verified = false; /* A boolean to verify that the flagged tweet is posted by a username in String[] handles */
     private static boolean published = false; /* A boolean that tracks whether a tweet was already published. */
     private static String type = "Unknown"; /* The default 'Type' of tweet */
-    private static NLogger logger = new NLogger(false);
+    private static NLogger logger = new NLogger(true);
 
     /**
      * The main method. Initializes Twitter, TwitterStream, and the StatusListener.
@@ -65,27 +62,29 @@ public class Main {
                         for (long id : teams) {                                    /* Prevents replies from being flagged */
                             if (id == status.getUser().getId())
                                 verified = true;
-                            logger.info("Verified? " + verified);
                         }
+                        logger.info("Verified? " + verified);
                         if (verified) {
                             detected = true;
-                            logger.info("Detected flag updated to: " + detected);
                             type = findType(status);
+                            logger.info("This tweet is a promotion");
                             logger.info("Type found: " + type);
-                            logger.info("Attempting to publish tweet");
+                            logger.info("Attempting to publish tweet...");
                             try {
                                 published = true;
                                 publishTweet(status);
                             } catch (TwitterException e) {
                                 logger.warn("Exception occurred when attempting to publish tweet: ", e);
                             }
+                        } else {
+                            logger.info("This tweet was either a reply or a non-promotion\n");
                         }
                     }
                 }
                 if (status.getURLEntities().length != 0 && !published) {
                     if (status.getURLEntities()[0].getExpandedURL().contains("spraycode")
                             || status.getURLEntities()[0].getExpandedURL().contains("owgamecodes")) {
-                        logger.info("Attempting to publish tweet with URL");
+                        logger.info("Attempting to publish tweet...");
                         try {
                             publishTweet(status);
                             published = true;
@@ -97,9 +96,6 @@ public class Main {
                 detected = false;
                 verified = false;
                 published = false;
-                logger.info("Detected flag updated to: " + detected);
-                logger.info("Detected flag updated to: " + verified);
-                logger.info("Detected flag updated to: " + published);
             }
         };
         twitterStream.addListener(statusListener);
@@ -154,5 +150,6 @@ public class Main {
                         "\nType: " + type +
                         "\nLink: " + url +
                         "\nTweet: " + "https://twitter.com/" + contents.getUser().getScreenName() + "/status/" + contents.getId());
+        logger.info("Tweet published to account Id: " + me.getId());
     }
 }

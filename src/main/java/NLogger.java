@@ -22,7 +22,7 @@ public class NLogger {
      * @return The system time.
      */
     public String getTime() {
-        return java.util.Calendar.getInstance().getTime() + "";
+        return java.time.LocalTime.now() + "";
     }
 
     /**
