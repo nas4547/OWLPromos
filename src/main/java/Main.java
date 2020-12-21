@@ -79,7 +79,7 @@ public class Main {
                         }
                     }
                 } if(!published) {
-                    logger.info("This tweet was either a reply or a non-promotion\n");
+                    logger.info("This tweet was likely either a reply, retweet, or a non-promotion\n");
                 }
                 if (status.getURLEntities().length != 0 && !published) {
                     if (status.getURLEntities()[0].getExpandedURL().contains("spraycode")
