@@ -5,7 +5,7 @@ import java.util.Arrays;
 /**
  * A bot that automatically detects giveaways run by teams and tweets them out.
  *
- * @author Nate S.
+ * @author @ostrich_toast.
  */
 public class Main {
     private static Twitter me; /* The twitter defined in twitter4j.properties */
@@ -55,7 +55,6 @@ public class Main {
         StatusListener statusListener = new StatusAdapter() {
             @Override
             public void onStatus(Status status) {
-                logger.info("A tweet from " + status.getUser().getScreenName() + " was flagged.");
                 String statusText = status.getText();
                 for (String keyword : keyWords) {
                     if (statusText.toLowerCase().contains(keyword) && !detected) { /* Prevents duplicates and case sensitivity */
@@ -63,8 +62,8 @@ public class Main {
                             if (id == status.getUser().getId())
                                 verified = true;
                         }
-                        logger.info("Verified? " + verified);
                         if (verified) {
+                            logger.info("A tweet from " + status.getUser().getScreenName() + " was flagged.");
                             detected = true;
                             type = findType(status);
                             logger.info("This tweet is a promotion");
@@ -78,8 +77,6 @@ public class Main {
                             }
                         }
                     }
-                } if(!published) {
-                    logger.info("This tweet was likely either a reply, retweet, or a non-promotion\n");
                 }
                 if (status.getURLEntities().length != 0 && !published) {
                     if (status.getURLEntities()[0].getExpandedURL().contains("spraycode")
@@ -92,6 +89,9 @@ public class Main {
                             logger.warn("Exception found when publishing with URL: ", e);
                         }
                     }
+                }
+                if (!published && verified) {
+                    logger.info("This tweet was likely either a reply, retweet, or a non-promotion\n");
                 }
                 detected = false;
                 verified = false;
