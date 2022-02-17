@@ -5,7 +5,7 @@ import java.util.Arrays;
 /**
  * A bot that automatically detects giveaways run by teams and tweets them out.
  *
- * @author @ostrich_toast.
+ * @author nas4547
  */
 public class Main {
     private static Twitter me; /* The twitter defined in twitter4j.properties */
