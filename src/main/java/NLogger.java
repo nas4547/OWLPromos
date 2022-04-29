@@ -1,7 +1,7 @@
 /**
  * A custom class to log information to the console.
  *
- * @author @ostrich_toast.
+ * @author @nas4547.
  */
 public class NLogger {
     private boolean withTime;
